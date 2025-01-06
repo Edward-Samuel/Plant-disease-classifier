@@ -1,10 +1,11 @@
 import os
 import random
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader, Subset
 import torch
 import torch.nn as nn
-import torch.optim as optim
+from torchvision import transforms
+from PIL import Image
+import matplotlib.pyplot as plt
+
 
 class BasicBlock(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1):
@@ -32,7 +33,7 @@ class BasicBlock(nn.Module):
         out = self.relu(out)
         out = self.conv2(out)
         out = self.bn2(out)
-        out += identity #residual connection
+        out += identity
         out = self.relu(out)
 
         return out
@@ -77,86 +78,74 @@ class ResNet(nn.Module):
 
         return x
 
-batch_size = 16
-num_epochs = 30
-learning_rate = 0.001
-num_samples_per_class = 250
-model_save_path = "plant_disease_resnet_scratch.pth"
+def load_image(image_path, transform):
+    image = Image.open(image_path).convert('RGB')
+    return transform(image).unsqueeze(0) 
 
-class_labels = ['bacterial_leaf_blight',
-                'bacterial_leaf_streak',
-                'bacterial_panicle_blight',
-                'blast',
-                'brown_spot',
-                'dead_heart',
-                'downy_mildew',
-                'hispa',
-                'normal',
-                'tungro']
+# Function to get random images from subfolders
+def get_random_images_from_subfolders(main_folder, num_images=5):
+    subfolders = [f.path for f in os.scandir(main_folder) if f.is_dir()]
+    images = []
+
+    while len(images) < num_images:
+        subfolder = random.choice(subfolders)
+        image_files = [f.path for f in os.scandir(subfolder) if f.is_file() and f.name.endswith(('.png', '.jpg', '.jpeg'))]
+        image_path = random.choice(image_files)
+        images.append((image_path, subfolder.split(os.path.sep)[-1]))  # (image path, class label)
+    
+    return images
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    transforms.Normalize(mean=[0.48, 0.45, 0.40], std=[0.23, 0.22, 0.21])  # Slightly changed mean and std
 ])
 
-data_dir = "/mnt/c/intern_project/images"
-full_dataset = datasets.ImageFolder(root=data_dir, transform=transform)
-
-def get_random_subset(dataset, num_samples_per_class):
-    """Select a random subset of images from each class."""
-    class_indices = {cls: [] for cls in dataset.class_to_idx.keys()}
-    for idx, (_, label) in enumerate(dataset):
-        class_name = dataset.classes[label]
-        class_indices[class_name].append(idx)
-
-    subset_indices = []
-    for cls, indices in class_indices.items():
-        subset_indices.extend(random.sample(indices, min(len(indices), num_samples_per_class)))
-
-    return Subset(dataset, subset_indices)
-
-subset_dataset = get_random_subset(full_dataset, num_samples_per_class)
-
-data_loader = DataLoader(subset_dataset, batch_size=batch_size, shuffle=True)
+model = ResNet(num_classes=10)
+model.load_state_dict(torch.load("plant_disease_resnet_scratch.pth"))
+model.eval()  #  model to evaluation mode
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Using device: {device}")
-
-model = ResNet(num_classes=len(class_labels))
 model = model.to(device)
 
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+# Path to  main folder
+main_folder = "/mnt/c/intern_project/images"
 
-for epoch in range(num_epochs):
-    model.train()
-    running_loss = 0.0
-    correct = 0
-    total = 0
+num_images_to_test = 12  # Updated number of test images
+random_images = get_random_images_from_subfolders(main_folder, num_images=num_images_to_test)
 
-    for inputs, labels in data_loader:
-        inputs, labels = inputs.to(device), labels.to(device)
+cols = 4  # Adjusted columns for better visualization
+rows = (num_images_to_test // cols) + (1 if num_images_to_test % cols != 0 else 0)
+fig, axes = plt.subplots(rows, cols, figsize=(18, 10))  # Adjusted figure size
+axes = axes.flatten()
 
-        optimizer.zero_grad()
-        outputs = model(inputs)
-        loss = criterion(outputs, labels)
+correct_predictions = 0
+total_predictions = 0
 
-        
-        loss.backward()
-        optimizer.step()
-        running_loss += loss.item()
-        _, predicted = outputs.max(1)
-        total += labels.size(0)
-        correct += predicted.eq(labels).sum().item()
+class_labels = ['bacterial_leaf_blight', 'bacterial_leaf_streak', 'bacterial_panicle_blight', 
+                'blast', 'brown_spot', 'dead_heart', 'downy_mildew', 'hispa', 'normal', 'tungro']
 
-    epoch_loss = running_loss / len(data_loader)
-    accuracy = 100.0 * correct / total
+for idx, (image_path, true_label) in enumerate(random_images):
+    image_tensor = load_image(image_path, transform).to(device)
+    with torch.no_grad():
+        outputs = model(image_tensor)
+        _, predicted_class = outputs.max(1)
 
-    print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {epoch_loss:.4f}, Accuracy: {accuracy:.2f}%")
+    predicted_label = class_labels[predicted_class.item()]
+    total_predictions += 1
+    if predicted_label == true_label:
+        correct_predictions += 1
 
-# trained model
-torch.save(model.state_dict(), model_save_path)
-print(f"Model saved to {model_save_path}")
+    image = Image.open(image_path)
 
+    axes[idx].imshow(image)
+    axes[idx].set_title(f"Predicted: {predicted_label}\nActual: {true_label}")
+    axes[idx].axis('off')  # Hide the axis
+for i in range(idx + 1, len(axes)):
+    axes[i].axis('off')
 
+plt.tight_layout()  
+plt.show()
+
+accuracy = (correct_predictions / total_predictions) * 100
+print(f"Accuracy: {accuracy:.2f}%")

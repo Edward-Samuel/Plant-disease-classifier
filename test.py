@@ -143,7 +143,7 @@ for idx, (image_path, true_label) in enumerate(random_images):
 
     axes[idx].imshow(image)
     axes[idx].set_title(f"Predicted: {predicted_label}\nActual: {true_label}")
-    axes[idx].axis('off')  # Hide the axis
+    axes[idx].axis('off')  
 for i in range(idx + 1, len(axes)):
     axes[i].axis('off')
 
