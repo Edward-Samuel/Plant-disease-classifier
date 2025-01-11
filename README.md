@@ -31,3 +31,7 @@ new Vi-Transformer model reached training accuracy 97% and 60% on testing data
 ![image](https://github.com/user-attachments/assets/b2b585dd-a2bd-4c0c-8d71-f2b7e8d6c011)
 ![image](https://github.com/user-attachments/assets/e23eafb5-d1a0-4f5e-9804-1d29b92eaa46)
 
+### Day 6 - Optimization and Results
+  Focused on optimizing the model through adjustments to learning rates, adaptive optimizers (e.g., AdamW), and enhanced data augmentation (rotations, flips, zooms). Regularization techniques like dropout and L2 were applied to reduce overfitting. The ViT model consistently achieved **95%-96% testing accuracy**, showing improved robustness and stability across diverse datasets. This phase solidified the model's reliability for plant disease detection.
+![image](https://github.com/user-attachments/assets/65feaa04-115c-44f8-bcb2-608fc17c74b7)
+![image](https://github.com/user-attachments/assets/dd50cbff-4e88-4561-80ca-f886ebd8d2f3)
