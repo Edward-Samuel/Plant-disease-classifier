@@ -53,7 +53,8 @@ Testing
 
 Validation on unseen data(5000)images
 ![image](https://github.com/user-attachments/assets/bf676c12-8e0c-4151-a8af-7a3ce10d2849)
-![image](https://github.com/user-attachments/assets/a51e39d6-a4c3-41a4-9a7c-db673a7cbe9f)
+![image](https://github.com/user-attachments/assets/26818c18-ca33-470c-8898-9b7d5f3432c7)
+
 
 
 Training accuracy - 99%
