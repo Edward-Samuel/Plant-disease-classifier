@@ -58,8 +58,8 @@ Validation on unseen data(5000)images
 
 
 Training accuracy - 99%
-Testing Accuracy - 97%
-Validation - 90% - 94%
+Testing Accuracy (seen data )- 97%
+Validation(unseen data) - 70% - 78%
 
 
 
