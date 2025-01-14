@@ -2,3 +2,5 @@ torch
 torchvision
 Pillow
 matplotlib
+transformers
+pandas
