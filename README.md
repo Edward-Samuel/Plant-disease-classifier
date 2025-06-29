@@ -2,7 +2,8 @@
 Classify plant diseases with a custom CNN (ResNet) model built from scratch. A lightweight and efficient solution for detectingplant diseases using images
 
 Day 1 - initial model build
-![image](https://github.com/user-attachments/assets/9307abe4-7a72-4de8-964f-b562f90a4fc3)
+![400206288-9307abe4-7a72-4de8-964f-b562f90a4fc3](https://github.com/user-attachments/assets/61022533-a2ac-48f2-a1f8-ec3b1c37008b)
+
 Trained on 200 images on each disease images and normal image
 
 ![image](https://github.com/user-attachments/assets/1560805e-4778-4358-a224-eb815a4c8baf)
@@ -14,10 +15,9 @@ Day 3 - Tried to validate the model with images from internet ,but able to fifnd
   Split the datset into (75/25)csv format for easier access , previously(80/20)
   Testing accuracy on unseen data(given) reached a average of 90%
   
-  ![image](https://github.com/user-attachments/assets/3c9c214e-9d32-4f7f-a4bf-b776329601ce)
+  ![400791263-3c9c214e-9d32-4f7f-a4bf-b776329601ce](https://github.com/user-attachments/assets/679ad673-b0e9-40d9-a2c1-2487df1fc18d)
 
   ![image](https://github.com/user-attachments/assets/1f16d1b2-a2c9-4b18-9b85-f91d43077fb4)
-
  
 Day 4 - https://github.com/B3-SOFTWARE/Paddy-Disease-Classifier
 
@@ -44,10 +44,11 @@ Enhanced the VisionTransformers model for more accurate and robust predicition
 
 Trained on 7800(75%) images and tested on 2600 (25%)images
 Training
-![image](https://github.com/user-attachments/assets/229cdb5b-d0da-46b0-8af4-8b90129ed737)
+![402863744-229cdb5b-d0da-46b0-8af4-8b90129ed737](https://github.com/user-attachments/assets/1d2a3248-0e73-4646-92b7-b71b2a155777)
 
 Testing
-![image](https://github.com/user-attachments/assets/17a8dd96-0ee3-4f46-bc3f-05ca02350ce9)
+![402868318-17a8dd96-0ee3-4f46-bc3f-05ca02350ce9](https://github.com/user-attachments/assets/1984fb9d-7f74-4c23-a42e-ed250158a714)
+
 
 ![image](https://github.com/user-attachments/assets/d24ee38d-3afb-46a0-be56-c0c9b1e91073)
 
